@@ -1,0 +1,373 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	LEDState,1,1
+  20              		.section	.text.setup_leds,"ax",%progbits
+  21              		.align	2
+  22              		.thumb
+  23              		.thumb_func
+  25              	setup_leds:
+  26              	.LFB110:
+  27              		.file 1 "../main.c"
+   1:../main.c     **** /*
+   2:../main.c     ****  * main.c
+   3:../main.c     ****  *
+   4:../main.c     ****  *  Created on: 03 июля 2015 г.
+   5:../main.c     ****  *      Author: alexb
+   6:../main.c     ****  */
+   7:../main.c     **** 
+   8:../main.c     **** #include <stm32f4xx.h>
+   9:../main.c     **** #include <misc.h>
+  10:../main.c     **** 
+  11:../main.c     **** #define LEDPORT		GPIOD
+  12:../main.c     **** #define LEDGREEN	(1<<12)
+  13:../main.c     **** #define LEDORANGE	(1<<13)
+  14:../main.c     **** #define LEDRED		(1<<14)
+  15:../main.c     **** #define LEDBLUE		(1<<15)
+  16:../main.c     **** 
+  17:../main.c     **** enum StatesOfLed{
+  18:../main.c     **** 	LEDOff,LEDRed,LEDGreen,LEDBlue,LEDOrange} LEDState;
+  19:../main.c     **** 
+  20:../main.c     **** static inline void setup_leds(void){
+  28              		.loc 1 20 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 80B4     		push	{r7}
+  34              		.cfi_def_cfa_offset 4
+  35              		.cfi_offset 7, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              		.cfi_def_cfa_register 7
+  21:../main.c     **** 	RCC->AHB1ENR|=RCC_AHB1ENR_GPIODEN;
+  38              		.loc 1 21 0
+  39 0004 4FF46053 		mov	r3, #14336
+  40 0008 C4F20203 		movt	r3, 16386
+  41 000c 4FF46052 		mov	r2, #14336
+  42 0010 C4F20202 		movt	r2, 16386
+  43 0014 126B     		ldr	r2, [r2, #48]
+  44 0016 42F00802 		orr	r2, r2, #8
+  45 001a 1A63     		str	r2, [r3, #48]
+  22:../main.c     **** 	LEDPORT->MODER|=GPIO_MODER_MODER12_0|GPIO_MODER_MODER13_0|GPIO_MODER_MODER14_0|GPIO_MODER_MODER15_
+  46              		.loc 1 22 0
+  47 001c 4FF44063 		mov	r3, #3072
+  48 0020 C4F20203 		movt	r3, 16386
+  49 0024 4FF44062 		mov	r2, #3072
+  50 0028 C4F20202 		movt	r2, 16386
+  51 002c 1268     		ldr	r2, [r2]
+  52 002e 42F0AA42 		orr	r2, r2, #1426063360
+  53 0032 1A60     		str	r2, [r3]
+  23:../main.c     **** }
+  54              		.loc 1 23 0
+  55 0034 BD46     		mov	sp, r7
+  56              		@ sp needed
+  57 0036 5DF8047B 		ldr	r7, [sp], #4
+  58 003a 7047     		bx	lr
+  59              		.cfi_endproc
+  60              	.LFE110:
+  62              		.section	.text.switch_leds_off,"ax",%progbits
+  63              		.align	2
+  64              		.thumb
+  65              		.thumb_func
+  67              	switch_leds_off:
+  68              	.LFB111:
+  24:../main.c     **** 
+  25:../main.c     **** static inline void switch_leds_off(void){
+  69              		.loc 1 25 0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 1, uses_anonymous_args = 0
+  73              		@ link register save eliminated.
+  74 0000 80B4     		push	{r7}
+  75              		.cfi_def_cfa_offset 4
+  76              		.cfi_offset 7, -4
+  77 0002 00AF     		add	r7, sp, #0
+  78              		.cfi_def_cfa_register 7
+  26:../main.c     **** 	LEDPORT->ODR=0;
+  79              		.loc 1 26 0
+  80 0004 4FF44063 		mov	r3, #3072
+  81 0008 C4F20203 		movt	r3, 16386
+  82 000c 0022     		movs	r2, #0
+  83 000e 5A61     		str	r2, [r3, #20]
+  27:../main.c     **** }
+  84              		.loc 1 27 0
+  85 0010 BD46     		mov	sp, r7
+  86              		@ sp needed
+  87 0012 5DF8047B 		ldr	r7, [sp], #4
+  88 0016 7047     		bx	lr
+  89              		.cfi_endproc
+  90              	.LFE111:
+  92              		.section	.text.turnLed,"ax",%progbits
+  93              		.align	2
+  94              		.thumb
+  95              		.thumb_func
+  97              	turnLed:
+  98              	.LFB112:
+  28:../main.c     **** 
+  29:../main.c     **** static inline void turnLed(){
+  99              		.loc 1 29 0
+ 100              		.cfi_startproc
+ 101              		@ args = 0, pretend = 0, frame = 0
+ 102              		@ frame_needed = 1, uses_anonymous_args = 0
+ 103 0000 80B5     		push	{r7, lr}
+ 104              		.cfi_def_cfa_offset 8
+ 105              		.cfi_offset 7, -8
+ 106              		.cfi_offset 14, -4
+ 107 0002 00AF     		add	r7, sp, #0
+ 108              		.cfi_def_cfa_register 7
+  30:../main.c     **** 	switch(LEDState){
+ 109              		.loc 1 30 0
+ 110 0004 40F20003 		movw	r3, #:lower16:LEDState
+ 111 0008 C0F20003 		movt	r3, #:upper16:LEDState
+ 112 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 113 000e 042B     		cmp	r3, #4
+ 114 0010 2FD8     		bhi	.L3
+ 115 0012 01A2     		adr	r2, .L6
+ 116 0014 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 117              		.p2align 2
+ 118              	.L6:
+ 119 0018 2D000000 		.word	.L5+1
+ 120 001c 43000000 		.word	.L7+1
+ 121 0020 53000000 		.word	.L8+1
+ 122 0024 63000000 		.word	.L9+1
+ 123 0028 33000000 		.word	.L10+1
+ 124              	.L5:
+  31:../main.c     **** 	case LEDOff:	switch_leds_off();
+ 125              		.loc 1 31 0
+ 126 002c FFF7FEFF 		bl	switch_leds_off
+  32:../main.c     **** 	break;
+ 127              		.loc 1 32 0
+ 128 0030 1FE0     		b	.L3
+ 129              	.L10:
+  33:../main.c     **** 	case LEDOrange:	LEDPORT->ODR=LEDORANGE;
+ 130              		.loc 1 33 0
+ 131 0032 4FF44063 		mov	r3, #3072
+ 132 0036 C4F20203 		movt	r3, 16386
+ 133 003a 4FF40052 		mov	r2, #8192
+ 134 003e 5A61     		str	r2, [r3, #20]
+  34:../main.c     **** 	break;
+ 135              		.loc 1 34 0
+ 136 0040 17E0     		b	.L3
+ 137              	.L7:
+  35:../main.c     **** 	case LEDRed: 	LEDPORT->ODR=LEDRED;
+ 138              		.loc 1 35 0
+ 139 0042 4FF44063 		mov	r3, #3072
+ 140 0046 C4F20203 		movt	r3, 16386
+ 141 004a 4FF48042 		mov	r2, #16384
+ 142 004e 5A61     		str	r2, [r3, #20]
+  36:../main.c     **** 	break;
+ 143              		.loc 1 36 0
+ 144 0050 0FE0     		b	.L3
+ 145              	.L8:
+  37:../main.c     **** 	case LEDGreen:	LEDPORT->ODR=LEDGREEN;
+ 146              		.loc 1 37 0
+ 147 0052 4FF44063 		mov	r3, #3072
+ 148 0056 C4F20203 		movt	r3, 16386
+ 149 005a 4FF48052 		mov	r2, #4096
+ 150 005e 5A61     		str	r2, [r3, #20]
+  38:../main.c     **** 	break;
+ 151              		.loc 1 38 0
+ 152 0060 07E0     		b	.L3
+ 153              	.L9:
+  39:../main.c     **** 	case LEDBlue: 	LEDPORT->ODR=LEDBLUE;
+ 154              		.loc 1 39 0
+ 155 0062 4FF44063 		mov	r3, #3072
+ 156 0066 C4F20203 		movt	r3, 16386
+ 157 006a 4FF40042 		mov	r2, #32768
+ 158 006e 5A61     		str	r2, [r3, #20]
+  40:../main.c     **** 	break;
+ 159              		.loc 1 40 0
+ 160 0070 00BF     		nop
+ 161              	.L3:
+  41:../main.c     **** 	}
+  42:../main.c     **** }
+ 162              		.loc 1 42 0
+ 163 0072 80BD     		pop	{r7, pc}
+ 164              		.cfi_endproc
+ 165              	.LFE112:
+ 167              		.section	.text.setNextLed,"ax",%progbits
+ 168              		.align	2
+ 169              		.global	setNextLed
+ 170              		.thumb
+ 171              		.thumb_func
+ 173              	setNextLed:
+ 174              	.LFB113:
+  43:../main.c     **** 
+  44:../main.c     **** void setNextLed(){
+ 175              		.loc 1 44 0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 1, uses_anonymous_args = 0
+ 179              		@ link register save eliminated.
+ 180 0000 80B4     		push	{r7}
+ 181              		.cfi_def_cfa_offset 4
+ 182              		.cfi_offset 7, -4
+ 183 0002 00AF     		add	r7, sp, #0
+ 184              		.cfi_def_cfa_register 7
+  45:../main.c     **** 	switch(LEDState){
+ 185              		.loc 1 45 0
+ 186 0004 40F20003 		movw	r3, #:lower16:LEDState
+ 187 0008 C0F20003 		movt	r3, #:upper16:LEDState
+ 188 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 189 000e 042B     		cmp	r3, #4
+ 190 0010 2FD8     		bhi	.L11
+ 191 0012 01A2     		adr	r2, .L14
+ 192 0014 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 193              		.p2align 2
+ 194              	.L14:
+ 195 0018 2D000000 		.word	.L13+1
+ 196 001c 49000000 		.word	.L15+1
+ 197 0020 57000000 		.word	.L16+1
+ 198 0024 65000000 		.word	.L17+1
+ 199 0028 3B000000 		.word	.L18+1
+ 200              	.L13:
+  46:../main.c     **** 	case LEDOff:	LEDState=LEDOrange;
+ 201              		.loc 1 46 0
+ 202 002c 40F20003 		movw	r3, #:lower16:LEDState
+ 203 0030 C0F20003 		movt	r3, #:upper16:LEDState
+ 204 0034 0422     		movs	r2, #4
+ 205 0036 1A70     		strb	r2, [r3]
+  47:../main.c     **** 	break;
+ 206              		.loc 1 47 0
+ 207 0038 1BE0     		b	.L11
+ 208              	.L18:
+  48:../main.c     **** 	case LEDOrange:	LEDState=LEDRed;
+ 209              		.loc 1 48 0
+ 210 003a 40F20003 		movw	r3, #:lower16:LEDState
+ 211 003e C0F20003 		movt	r3, #:upper16:LEDState
+ 212 0042 0122     		movs	r2, #1
+ 213 0044 1A70     		strb	r2, [r3]
+  49:../main.c     **** 	break;
+ 214              		.loc 1 49 0
+ 215 0046 14E0     		b	.L11
+ 216              	.L15:
+  50:../main.c     **** 	case LEDRed: 	LEDState=LEDGreen;
+ 217              		.loc 1 50 0
+ 218 0048 40F20003 		movw	r3, #:lower16:LEDState
+ 219 004c C0F20003 		movt	r3, #:upper16:LEDState
+ 220 0050 0222     		movs	r2, #2
+ 221 0052 1A70     		strb	r2, [r3]
+  51:../main.c     **** 	break;
+ 222              		.loc 1 51 0
+ 223 0054 0DE0     		b	.L11
+ 224              	.L16:
+  52:../main.c     **** 	case LEDGreen:	LEDState=LEDBlue;
+ 225              		.loc 1 52 0
+ 226 0056 40F20003 		movw	r3, #:lower16:LEDState
+ 227 005a C0F20003 		movt	r3, #:upper16:LEDState
+ 228 005e 0322     		movs	r2, #3
+ 229 0060 1A70     		strb	r2, [r3]
+  53:../main.c     **** 	break;
+ 230              		.loc 1 53 0
+ 231 0062 06E0     		b	.L11
+ 232              	.L17:
+  54:../main.c     **** 	case LEDBlue: 	LEDState=LEDOff;
+ 233              		.loc 1 54 0
+ 234 0064 40F20003 		movw	r3, #:lower16:LEDState
+ 235 0068 C0F20003 		movt	r3, #:upper16:LEDState
+ 236 006c 0022     		movs	r2, #0
+ 237 006e 1A70     		strb	r2, [r3]
+  55:../main.c     **** 	break;
+ 238              		.loc 1 55 0
+ 239 0070 00BF     		nop
+ 240              	.L11:
+  56:../main.c     **** 	}
+  57:../main.c     **** }
+ 241              		.loc 1 57 0
+ 242 0072 BD46     		mov	sp, r7
+ 243              		@ sp needed
+ 244 0074 5DF8047B 		ldr	r7, [sp], #4
+ 245 0078 7047     		bx	lr
+ 246              		.cfi_endproc
+ 247              	.LFE113:
+ 249 007a 00BF     		.section	.text.main,"ax",%progbits
+ 250              		.align	2
+ 251              		.global	main
+ 252              		.thumb
+ 253              		.thumb_func
+ 255              	main:
+ 256              	.LFB114:
+  58:../main.c     **** 
+  59:../main.c     **** void main(){
+ 257              		.loc 1 59 0
+ 258              		.cfi_startproc
+ 259              		@ args = 0, pretend = 0, frame = 0
+ 260              		@ frame_needed = 1, uses_anonymous_args = 0
+ 261 0000 80B5     		push	{r7, lr}
+ 262              		.cfi_def_cfa_offset 8
+ 263              		.cfi_offset 7, -8
+ 264              		.cfi_offset 14, -4
+ 265 0002 00AF     		add	r7, sp, #0
+ 266              		.cfi_def_cfa_register 7
+  60:../main.c     **** 	setup_leds();
+ 267              		.loc 1 60 0
+ 268 0004 FFF7FEFF 		bl	setup_leds
+  61:../main.c     **** 	switch_leds_off();
+ 269              		.loc 1 61 0
+ 270 0008 FFF7FEFF 		bl	switch_leds_off
+ 271              	.L20:
+  62:../main.c     **** 	while(1){
+  63:../main.c     **** 		setNextLed();
+ 272              		.loc 1 63 0 discriminator 1
+ 273 000c FFF7FEFF 		bl	setNextLed
+  64:../main.c     **** 		turnLed();
+ 274              		.loc 1 64 0 discriminator 1
+ 275 0010 FFF7FEFF 		bl	turnLed
+  65:../main.c     **** 	}
+ 276              		.loc 1 65 0 discriminator 1
+ 277 0014 FAE7     		b	.L20
+ 278              		.cfi_endproc
+ 279              	.LFE114:
+ 281 0016 00BF     		.text
+ 282              	.Letext0:
+ 283              		.file 2 "/opt/arm-2014.05/arm-none-eabi/include/stdint.h"
+ 284              		.file 3 "/media/asutp/promauto/promauto/src/stm32/workspace/02F4_Template/cmsis_boot/stm32f4xx.h"
+ 285              		.file 4 "/media/asutp/promauto/promauto/src/stm32/workspace/02F4_Template/cmsis/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+                            *COM*:00000001 LEDState
+     /tmp/ccTnfq4g.s:21     .text.setup_leds:00000000 $t
+     /tmp/ccTnfq4g.s:25     .text.setup_leds:00000000 setup_leds
+     /tmp/ccTnfq4g.s:63     .text.switch_leds_off:00000000 $t
+     /tmp/ccTnfq4g.s:67     .text.switch_leds_off:00000000 switch_leds_off
+     /tmp/ccTnfq4g.s:93     .text.turnLed:00000000 $t
+     /tmp/ccTnfq4g.s:97     .text.turnLed:00000000 turnLed
+     /tmp/ccTnfq4g.s:119    .text.turnLed:00000018 $d
+     /tmp/ccTnfq4g.s:126    .text.turnLed:0000002c $t
+     /tmp/ccTnfq4g.s:168    .text.setNextLed:00000000 $t
+     /tmp/ccTnfq4g.s:173    .text.setNextLed:00000000 setNextLed
+     /tmp/ccTnfq4g.s:195    .text.setNextLed:00000018 $d
+     /tmp/ccTnfq4g.s:202    .text.setNextLed:0000002c $t
+     /tmp/ccTnfq4g.s:250    .text.main:00000000 $t
+     /tmp/ccTnfq4g.s:255    .text.main:00000000 main
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.1.a98143eb06d636ed6a08228c168dc974
+                           .group:00000000 wm4.stm32f4xx.h.48.0b3cda0630bac1bf9be1255cab0e1f3b
+                           .group:00000000 wm4.core_cm4.h.32.5f62939b60122629d60d85d0c4a14709
+                           .group:00000000 wm4.newlib.h.8.384a112feabb3bef7b573ae48cde2e3b
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4.config.h.183.aa62afef667fb61d15fa64c48beb2f14
+                           .group:00000000 wm4._ansi.h.23.2147fde150631f5584b9dc29b914d1b8
+                           .group:00000000 wm4.stdint.h.20.54ad762faa59e3c05491630641c8d8bf
+                           .group:00000000 wm4.core_cmInstr.h.25.f50f886f2edf670cf199b35fd96f5c91
+                           .group:00000000 wm4.core_cm4_simd.h.29.b4a3fdfb606cb3b26119424324d4b963
+                           .group:00000000 wm4.core_cm4.h.153.5393ef7e6cebf34dd51ca528f9218ab3
+                           .group:00000000 wm4.stm32f4xx.h.283.19a4f5b18434688c6c3486bb9c91d8d5
+                           .group:00000000 wm4.misc.h.25.a0cb758c1f091b46f201b19cec9e63a1
+
+NO UNDEFINED SYMBOLS

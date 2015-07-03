@@ -1,0 +1,739 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"misc.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.NVIC_PriorityGroupConfig,"ax",%progbits
+  20              		.align	2
+  21              		.global	NVIC_PriorityGroupConfig
+  22              		.thumb
+  23              		.thumb_func
+  25              	NVIC_PriorityGroupConfig:
+  26              	.LFB110:
+  27              		.file 1 "../cmsis_lib/src/misc.c"
+   1:../cmsis_lib/src/misc.c **** /**
+   2:../cmsis_lib/src/misc.c ****   ******************************************************************************
+   3:../cmsis_lib/src/misc.c ****   * @file    misc.c
+   4:../cmsis_lib/src/misc.c ****   * @author  MCD Application Team
+   5:../cmsis_lib/src/misc.c ****   * @version V1.0.0
+   6:../cmsis_lib/src/misc.c ****   * @date    30-September-2011
+   7:../cmsis_lib/src/misc.c ****   * @brief   This file provides all the miscellaneous firmware functions (add-on
+   8:../cmsis_lib/src/misc.c ****   *          to CMSIS functions).
+   9:../cmsis_lib/src/misc.c ****   *          
+  10:../cmsis_lib/src/misc.c ****   *  @verbatim   
+  11:../cmsis_lib/src/misc.c ****   *                               
+  12:../cmsis_lib/src/misc.c ****   *          ===================================================================      
+  13:../cmsis_lib/src/misc.c ****   *                        How to configure Interrupts using driver 
+  14:../cmsis_lib/src/misc.c ****   *          ===================================================================      
+  15:../cmsis_lib/src/misc.c ****   * 
+  16:../cmsis_lib/src/misc.c ****   *            This section provide functions allowing to configure the NVIC interrupts (IRQ).
+  17:../cmsis_lib/src/misc.c ****   *            The Cortex-M4 exceptions are managed by CMSIS functions.
+  18:../cmsis_lib/src/misc.c ****   *
+  19:../cmsis_lib/src/misc.c ****   *            1. Configure the NVIC Priority Grouping using NVIC_PriorityGroupConfig()
+  20:../cmsis_lib/src/misc.c ****   *                function according to the following table.
+  21:../cmsis_lib/src/misc.c ****  
+  22:../cmsis_lib/src/misc.c ****   *  The table below gives the allowed values of the pre-emption priority and subpriority according
+  23:../cmsis_lib/src/misc.c ****   *  to the Priority Grouping configuration performed by NVIC_PriorityGroupConfig function
+  24:../cmsis_lib/src/misc.c ****   *    ============================================================================================
+  25:../cmsis_lib/src/misc.c ****   *      NVIC_PriorityGroup   | NVIC_IRQChannelPreemptionPriority | NVIC_IRQChannelSubPriority  |  
+  26:../cmsis_lib/src/misc.c ****   *    ============================================================================================
+  27:../cmsis_lib/src/misc.c ****   *     NVIC_PriorityGroup_0  |                0                  |            0-15             | 0
+  28:../cmsis_lib/src/misc.c ****   *                           |                                   |                             | 4
+  29:../cmsis_lib/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  30:../cmsis_lib/src/misc.c ****   *     NVIC_PriorityGroup_1  |                0-1                |            0-7              | 1
+  31:../cmsis_lib/src/misc.c ****   *                           |                                   |                             | 3
+  32:../cmsis_lib/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  33:../cmsis_lib/src/misc.c ****   *     NVIC_PriorityGroup_2  |                0-3                |            0-3              | 2
+  34:../cmsis_lib/src/misc.c ****   *                           |                                   |                             | 2
+  35:../cmsis_lib/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  36:../cmsis_lib/src/misc.c ****   *     NVIC_PriorityGroup_3  |                0-7                |            0-1              | 3
+  37:../cmsis_lib/src/misc.c ****   *                           |                                   |                             | 1
+  38:../cmsis_lib/src/misc.c ****   *    --------------------------------------------------------------------------------------------
+  39:../cmsis_lib/src/misc.c ****   *     NVIC_PriorityGroup_4  |                0-15               |            0                | 4
+  40:../cmsis_lib/src/misc.c ****   *                           |                                   |                             | 0
+  41:../cmsis_lib/src/misc.c ****   *    ============================================================================================
+  42:../cmsis_lib/src/misc.c ****   *
+  43:../cmsis_lib/src/misc.c ****   *            2. Enable and Configure the priority of the selected IRQ Channels using NVIC_Init() 
+  44:../cmsis_lib/src/misc.c ****   *
+  45:../cmsis_lib/src/misc.c ****   * @note  When the NVIC_PriorityGroup_0 is selected, IRQ pre-emption is no more possible. 
+  46:../cmsis_lib/src/misc.c ****   *        The pending IRQ priority will be managed only by the subpriority.
+  47:../cmsis_lib/src/misc.c ****   *
+  48:../cmsis_lib/src/misc.c ****   * @note  IRQ priority order (sorted by highest to lowest priority):
+  49:../cmsis_lib/src/misc.c ****   *         - Lowest pre-emption priority
+  50:../cmsis_lib/src/misc.c ****   *         - Lowest subpriority
+  51:../cmsis_lib/src/misc.c ****   *         - Lowest hardware priority (IRQ number)
+  52:../cmsis_lib/src/misc.c ****   *
+  53:../cmsis_lib/src/misc.c ****   *  @endverbatim
+  54:../cmsis_lib/src/misc.c ****   *
+  55:../cmsis_lib/src/misc.c ****   ******************************************************************************
+  56:../cmsis_lib/src/misc.c ****   * @attention
+  57:../cmsis_lib/src/misc.c ****   *
+  58:../cmsis_lib/src/misc.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  59:../cmsis_lib/src/misc.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  60:../cmsis_lib/src/misc.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  61:../cmsis_lib/src/misc.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  62:../cmsis_lib/src/misc.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  63:../cmsis_lib/src/misc.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  64:../cmsis_lib/src/misc.c ****   *
+  65:../cmsis_lib/src/misc.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  66:../cmsis_lib/src/misc.c ****   ******************************************************************************
+  67:../cmsis_lib/src/misc.c ****   */
+  68:../cmsis_lib/src/misc.c **** 
+  69:../cmsis_lib/src/misc.c **** /* Includes ------------------------------------------------------------------*/
+  70:../cmsis_lib/src/misc.c **** #include "misc.h"
+  71:../cmsis_lib/src/misc.c **** 
+  72:../cmsis_lib/src/misc.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+  73:../cmsis_lib/src/misc.c ****   * @{
+  74:../cmsis_lib/src/misc.c ****   */
+  75:../cmsis_lib/src/misc.c **** 
+  76:../cmsis_lib/src/misc.c **** /** @defgroup MISC 
+  77:../cmsis_lib/src/misc.c ****   * @brief MISC driver modules
+  78:../cmsis_lib/src/misc.c ****   * @{
+  79:../cmsis_lib/src/misc.c ****   */
+  80:../cmsis_lib/src/misc.c **** 
+  81:../cmsis_lib/src/misc.c **** /* Private typedef -----------------------------------------------------------*/
+  82:../cmsis_lib/src/misc.c **** /* Private define ------------------------------------------------------------*/
+  83:../cmsis_lib/src/misc.c **** #define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
+  84:../cmsis_lib/src/misc.c **** 
+  85:../cmsis_lib/src/misc.c **** /* Private macro -------------------------------------------------------------*/
+  86:../cmsis_lib/src/misc.c **** /* Private variables ---------------------------------------------------------*/
+  87:../cmsis_lib/src/misc.c **** /* Private function prototypes -----------------------------------------------*/
+  88:../cmsis_lib/src/misc.c **** /* Private functions ---------------------------------------------------------*/
+  89:../cmsis_lib/src/misc.c **** 
+  90:../cmsis_lib/src/misc.c **** /** @defgroup MISC_Private_Functions
+  91:../cmsis_lib/src/misc.c ****   * @{
+  92:../cmsis_lib/src/misc.c ****   */
+  93:../cmsis_lib/src/misc.c **** 
+  94:../cmsis_lib/src/misc.c **** /**
+  95:../cmsis_lib/src/misc.c ****   * @brief  Configures the priority grouping: pre-emption priority and subpriority.
+  96:../cmsis_lib/src/misc.c ****   * @param  NVIC_PriorityGroup: specifies the priority grouping bits length. 
+  97:../cmsis_lib/src/misc.c ****   *   This parameter can be one of the following values:
+  98:../cmsis_lib/src/misc.c ****   *     @arg NVIC_PriorityGroup_0: 0 bits for pre-emption priority
+  99:../cmsis_lib/src/misc.c ****   *                                4 bits for subpriority
+ 100:../cmsis_lib/src/misc.c ****   *     @arg NVIC_PriorityGroup_1: 1 bits for pre-emption priority
+ 101:../cmsis_lib/src/misc.c ****   *                                3 bits for subpriority
+ 102:../cmsis_lib/src/misc.c ****   *     @arg NVIC_PriorityGroup_2: 2 bits for pre-emption priority
+ 103:../cmsis_lib/src/misc.c ****   *                                2 bits for subpriority
+ 104:../cmsis_lib/src/misc.c ****   *     @arg NVIC_PriorityGroup_3: 3 bits for pre-emption priority
+ 105:../cmsis_lib/src/misc.c ****   *                                1 bits for subpriority
+ 106:../cmsis_lib/src/misc.c ****   *     @arg NVIC_PriorityGroup_4: 4 bits for pre-emption priority
+ 107:../cmsis_lib/src/misc.c ****   *                                0 bits for subpriority
+ 108:../cmsis_lib/src/misc.c ****   * @note   When the NVIC_PriorityGroup_0 is selected, IRQ pre-emption is no more possible. 
+ 109:../cmsis_lib/src/misc.c ****   *         The pending IRQ priority will be managed only by the subpriority. 
+ 110:../cmsis_lib/src/misc.c ****   * @retval None
+ 111:../cmsis_lib/src/misc.c ****   */
+ 112:../cmsis_lib/src/misc.c **** void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup)
+ 113:../cmsis_lib/src/misc.c **** {
+  28              		.loc 1 113 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 82B0     		sub	sp, sp, #8
+  37              		.cfi_def_cfa_offset 16
+  38 0004 00AF     		add	r7, sp, #0
+  39              		.cfi_def_cfa_register 7
+  40 0006 7860     		str	r0, [r7, #4]
+ 114:../cmsis_lib/src/misc.c ****   /* Check the parameters */
+ 115:../cmsis_lib/src/misc.c ****   assert_param(IS_NVIC_PRIORITY_GROUP(NVIC_PriorityGroup));
+  41              		.loc 1 115 0
+  42 0008 7B68     		ldr	r3, [r7, #4]
+  43 000a B3F5E06F 		cmp	r3, #1792
+  44 000e 0FD0     		beq	.L2
+  45              		.loc 1 115 0 is_stmt 0 discriminator 2
+  46 0010 7B68     		ldr	r3, [r7, #4]
+  47 0012 B3F5C06F 		cmp	r3, #1536
+  48 0016 0BD0     		beq	.L2
+  49              		.loc 1 115 0 discriminator 1
+  50 0018 7B68     		ldr	r3, [r7, #4]
+  51 001a B3F5A06F 		cmp	r3, #1280
+  52 001e 07D0     		beq	.L2
+  53 0020 7B68     		ldr	r3, [r7, #4]
+  54 0022 B3F5806F 		cmp	r3, #1024
+  55 0026 03D0     		beq	.L2
+  56 0028 7B68     		ldr	r3, [r7, #4]
+  57 002a B3F5407F 		cmp	r3, #768
+  58 002e 01D1     		bne	.L3
+  59              	.L2:
+  60 0030 0123     		movs	r3, #1
+  61 0032 00E0     		b	.L4
+  62              	.L3:
+  63              		.loc 1 115 0 discriminator 3
+  64 0034 0023     		movs	r3, #0
+  65              	.L4:
+  66              		.loc 1 115 0 discriminator 4
+  67 0036 1846     		mov	r0, r3
+  68 0038 FFF7FEFF 		bl	assert_param
+ 116:../cmsis_lib/src/misc.c ****   
+ 117:../cmsis_lib/src/misc.c ****   /* Set the PRIGROUP[10:8] bits according to NVIC_PriorityGroup value */
+ 118:../cmsis_lib/src/misc.c ****   SCB->AIRCR = AIRCR_VECTKEY_MASK | NVIC_PriorityGroup;
+  69              		.loc 1 118 0 is_stmt 1 discriminator 4
+  70 003c 4FF46D43 		mov	r3, #60672
+  71 0040 CEF20003 		movt	r3, 57344
+  72 0044 7A68     		ldr	r2, [r7, #4]
+  73 0046 42F0BF62 		orr	r2, r2, #100139008
+  74 004a 42F40032 		orr	r2, r2, #131072
+  75 004e DA60     		str	r2, [r3, #12]
+ 119:../cmsis_lib/src/misc.c **** }
+  76              		.loc 1 119 0 discriminator 4
+  77 0050 0837     		adds	r7, r7, #8
+  78 0052 BD46     		mov	sp, r7
+  79              		@ sp needed
+  80 0054 80BD     		pop	{r7, pc}
+  81              		.cfi_endproc
+  82              	.LFE110:
+  84 0056 00BF     		.section	.text.NVIC_Init,"ax",%progbits
+  85              		.align	2
+  86              		.global	NVIC_Init
+  87              		.thumb
+  88              		.thumb_func
+  90              	NVIC_Init:
+  91              	.LFB111:
+ 120:../cmsis_lib/src/misc.c **** 
+ 121:../cmsis_lib/src/misc.c **** /**
+ 122:../cmsis_lib/src/misc.c ****   * @brief  Initializes the NVIC peripheral according to the specified
+ 123:../cmsis_lib/src/misc.c ****   *         parameters in the NVIC_InitStruct.
+ 124:../cmsis_lib/src/misc.c ****   * @note   To configure interrupts priority correctly, the NVIC_PriorityGroupConfig()
+ 125:../cmsis_lib/src/misc.c ****   *         function should be called before. 
+ 126:../cmsis_lib/src/misc.c ****   * @param  NVIC_InitStruct: pointer to a NVIC_InitTypeDef structure that contains
+ 127:../cmsis_lib/src/misc.c ****   *         the configuration information for the specified NVIC peripheral.
+ 128:../cmsis_lib/src/misc.c ****   * @retval None
+ 129:../cmsis_lib/src/misc.c ****   */
+ 130:../cmsis_lib/src/misc.c **** void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct)
+ 131:../cmsis_lib/src/misc.c **** {
+  92              		.loc 1 131 0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 16
+  95              		@ frame_needed = 1, uses_anonymous_args = 0
+  96 0000 80B5     		push	{r7, lr}
+  97              		.cfi_def_cfa_offset 8
+  98              		.cfi_offset 7, -8
+  99              		.cfi_offset 14, -4
+ 100 0002 84B0     		sub	sp, sp, #16
+ 101              		.cfi_def_cfa_offset 24
+ 102 0004 00AF     		add	r7, sp, #0
+ 103              		.cfi_def_cfa_register 7
+ 104 0006 7860     		str	r0, [r7, #4]
+ 132:../cmsis_lib/src/misc.c ****   uint8_t tmppriority = 0x00, tmppre = 0x00, tmpsub = 0x0F;
+ 105              		.loc 1 132 0
+ 106 0008 0023     		movs	r3, #0
+ 107 000a FB73     		strb	r3, [r7, #15]
+ 108 000c 0023     		movs	r3, #0
+ 109 000e BB73     		strb	r3, [r7, #14]
+ 110 0010 0F23     		movs	r3, #15
+ 111 0012 7B73     		strb	r3, [r7, #13]
+ 133:../cmsis_lib/src/misc.c ****   
+ 134:../cmsis_lib/src/misc.c ****   /* Check the parameters */
+ 135:../cmsis_lib/src/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NVIC_InitStruct->NVIC_IRQChannelCmd));
+ 112              		.loc 1 135 0
+ 113 0014 7B68     		ldr	r3, [r7, #4]
+ 114 0016 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 115 0018 002B     		cmp	r3, #0
+ 116 001a 03D0     		beq	.L6
+ 117              		.loc 1 135 0 is_stmt 0 discriminator 2
+ 118 001c 7B68     		ldr	r3, [r7, #4]
+ 119 001e DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 120 0020 012B     		cmp	r3, #1
+ 121 0022 01D1     		bne	.L7
+ 122              	.L6:
+ 123              		.loc 1 135 0 discriminator 1
+ 124 0024 0123     		movs	r3, #1
+ 125 0026 00E0     		b	.L8
+ 126              	.L7:
+ 127              		.loc 1 135 0 discriminator 3
+ 128 0028 0023     		movs	r3, #0
+ 129              	.L8:
+ 130              		.loc 1 135 0 discriminator 4
+ 131 002a 1846     		mov	r0, r3
+ 132 002c FFF7FEFF 		bl	assert_param
+ 136:../cmsis_lib/src/misc.c ****   assert_param(IS_NVIC_PREEMPTION_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority));  
+ 133              		.loc 1 136 0 is_stmt 1 discriminator 4
+ 134 0030 7B68     		ldr	r3, [r7, #4]
+ 135 0032 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 136 0034 0F2B     		cmp	r3, #15
+ 137 0036 8CBF     		ite	hi
+ 138 0038 0023     		movhi	r3, #0
+ 139 003a 0123     		movls	r3, #1
+ 140 003c DBB2     		uxtb	r3, r3
+ 141 003e 1846     		mov	r0, r3
+ 142 0040 FFF7FEFF 		bl	assert_param
+ 137:../cmsis_lib/src/misc.c ****   assert_param(IS_NVIC_SUB_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelSubPriority));
+ 143              		.loc 1 137 0 discriminator 4
+ 144 0044 7B68     		ldr	r3, [r7, #4]
+ 145 0046 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 146 0048 0F2B     		cmp	r3, #15
+ 147 004a 8CBF     		ite	hi
+ 148 004c 0023     		movhi	r3, #0
+ 149 004e 0123     		movls	r3, #1
+ 150 0050 DBB2     		uxtb	r3, r3
+ 151 0052 1846     		mov	r0, r3
+ 152 0054 FFF7FEFF 		bl	assert_param
+ 138:../cmsis_lib/src/misc.c ****     
+ 139:../cmsis_lib/src/misc.c ****   if (NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
+ 153              		.loc 1 139 0 discriminator 4
+ 154 0058 7B68     		ldr	r3, [r7, #4]
+ 155 005a DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 156 005c 002B     		cmp	r3, #0
+ 157 005e 40D0     		beq	.L9
+ 140:../cmsis_lib/src/misc.c ****   {
+ 141:../cmsis_lib/src/misc.c ****     /* Compute the Corresponding IRQ Priority --------------------------------*/    
+ 142:../cmsis_lib/src/misc.c ****     tmppriority = (0x700 - ((SCB->AIRCR) & (uint32_t)0x700))>> 0x08;
+ 158              		.loc 1 142 0
+ 159 0060 4FF46D43 		mov	r3, #60672
+ 160 0064 CEF20003 		movt	r3, 57344
+ 161 0068 DB68     		ldr	r3, [r3, #12]
+ 162 006a DB43     		mvns	r3, r3
+ 163 006c 03F4E063 		and	r3, r3, #1792
+ 164 0070 1B0A     		lsrs	r3, r3, #8
+ 165 0072 FB73     		strb	r3, [r7, #15]
+ 143:../cmsis_lib/src/misc.c ****     tmppre = (0x4 - tmppriority);
+ 166              		.loc 1 143 0
+ 167 0074 FB7B     		ldrb	r3, [r7, #15]
+ 168 0076 C3F10403 		rsb	r3, r3, #4
+ 169 007a BB73     		strb	r3, [r7, #14]
+ 144:../cmsis_lib/src/misc.c ****     tmpsub = tmpsub >> tmppriority;
+ 170              		.loc 1 144 0
+ 171 007c 7A7B     		ldrb	r2, [r7, #13]	@ zero_extendqisi2
+ 172 007e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 173 0080 42FA03F3 		asr	r3, r2, r3
+ 174 0084 7B73     		strb	r3, [r7, #13]
+ 145:../cmsis_lib/src/misc.c **** 
+ 146:../cmsis_lib/src/misc.c ****     tmppriority = NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << tmppre;
+ 175              		.loc 1 146 0
+ 176 0086 7B68     		ldr	r3, [r7, #4]
+ 177 0088 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 178 008a 1A46     		mov	r2, r3
+ 179 008c BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 180 008e 02FA03F3 		lsl	r3, r2, r3
+ 181 0092 FB73     		strb	r3, [r7, #15]
+ 147:../cmsis_lib/src/misc.c ****     tmppriority |=  (uint8_t)(NVIC_InitStruct->NVIC_IRQChannelSubPriority & tmpsub);
+ 182              		.loc 1 147 0
+ 183 0094 7B68     		ldr	r3, [r7, #4]
+ 184 0096 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 185 0098 7B7B     		ldrb	r3, [r7, #13]
+ 186 009a 1340     		ands	r3, r3, r2
+ 187 009c DAB2     		uxtb	r2, r3
+ 188 009e FB7B     		ldrb	r3, [r7, #15]
+ 189 00a0 1343     		orrs	r3, r3, r2
+ 190 00a2 FB73     		strb	r3, [r7, #15]
+ 148:../cmsis_lib/src/misc.c ****         
+ 149:../cmsis_lib/src/misc.c ****     tmppriority = tmppriority << 0x04;
+ 191              		.loc 1 149 0
+ 192 00a4 FB7B     		ldrb	r3, [r7, #15]
+ 193 00a6 1B01     		lsls	r3, r3, #4
+ 194 00a8 FB73     		strb	r3, [r7, #15]
+ 150:../cmsis_lib/src/misc.c ****         
+ 151:../cmsis_lib/src/misc.c ****     NVIC->IP[NVIC_InitStruct->NVIC_IRQChannel] = tmppriority;
+ 195              		.loc 1 151 0
+ 196 00aa 4FF46143 		mov	r3, #57600
+ 197 00ae CEF20003 		movt	r3, 57344
+ 198 00b2 7A68     		ldr	r2, [r7, #4]
+ 199 00b4 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 200 00b6 1344     		add	r3, r3, r2
+ 201 00b8 FA7B     		ldrb	r2, [r7, #15]
+ 202 00ba 83F80023 		strb	r2, [r3, #768]
+ 152:../cmsis_lib/src/misc.c ****     
+ 153:../cmsis_lib/src/misc.c ****     /* Enable the Selected IRQ Channels --------------------------------------*/
+ 154:../cmsis_lib/src/misc.c ****     NVIC->ISER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+ 203              		.loc 1 154 0
+ 204 00be 4FF46143 		mov	r3, #57600
+ 205 00c2 CEF20003 		movt	r3, 57344
+ 206 00c6 7A68     		ldr	r2, [r7, #4]
+ 207 00c8 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 208 00ca 5209     		lsrs	r2, r2, #5
+ 209 00cc D2B2     		uxtb	r2, r2
+ 155:../cmsis_lib/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 210              		.loc 1 155 0
+ 211 00ce 7968     		ldr	r1, [r7, #4]
+ 212 00d0 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 213 00d2 01F01F01 		and	r1, r1, #31
+ 214 00d6 0120     		movs	r0, #1
+ 215 00d8 00FA01F1 		lsl	r1, r0, r1
+ 154:../cmsis_lib/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 216              		.loc 1 154 0
+ 217 00dc 43F82210 		str	r1, [r3, r2, lsl #2]
+ 218 00e0 11E0     		b	.L5
+ 219              	.L9:
+ 156:../cmsis_lib/src/misc.c ****   }
+ 157:../cmsis_lib/src/misc.c ****   else
+ 158:../cmsis_lib/src/misc.c ****   {
+ 159:../cmsis_lib/src/misc.c ****     /* Disable the Selected IRQ Channels -------------------------------------*/
+ 160:../cmsis_lib/src/misc.c ****     NVIC->ICER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+ 220              		.loc 1 160 0
+ 221 00e2 4FF46143 		mov	r3, #57600
+ 222 00e6 CEF20003 		movt	r3, 57344
+ 223 00ea 7A68     		ldr	r2, [r7, #4]
+ 224 00ec 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 225 00ee 5209     		lsrs	r2, r2, #5
+ 226 00f0 D2B2     		uxtb	r2, r2
+ 161:../cmsis_lib/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 227              		.loc 1 161 0
+ 228 00f2 7968     		ldr	r1, [r7, #4]
+ 229 00f4 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 230 00f6 01F01F01 		and	r1, r1, #31
+ 231 00fa 0120     		movs	r0, #1
+ 232 00fc 00FA01F1 		lsl	r1, r0, r1
+ 160:../cmsis_lib/src/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 233              		.loc 1 160 0
+ 234 0100 2032     		adds	r2, r2, #32
+ 235 0102 43F82210 		str	r1, [r3, r2, lsl #2]
+ 236              	.L5:
+ 162:../cmsis_lib/src/misc.c ****   }
+ 163:../cmsis_lib/src/misc.c **** }
+ 237              		.loc 1 163 0
+ 238 0106 1037     		adds	r7, r7, #16
+ 239 0108 BD46     		mov	sp, r7
+ 240              		@ sp needed
+ 241 010a 80BD     		pop	{r7, pc}
+ 242              		.cfi_endproc
+ 243              	.LFE111:
+ 245              		.section	.text.NVIC_SetVectorTable,"ax",%progbits
+ 246              		.align	2
+ 247              		.global	NVIC_SetVectorTable
+ 248              		.thumb
+ 249              		.thumb_func
+ 251              	NVIC_SetVectorTable:
+ 252              	.LFB112:
+ 164:../cmsis_lib/src/misc.c **** 
+ 165:../cmsis_lib/src/misc.c **** /**
+ 166:../cmsis_lib/src/misc.c ****   * @brief  Sets the vector table location and Offset.
+ 167:../cmsis_lib/src/misc.c ****   * @param  NVIC_VectTab: specifies if the vector table is in RAM or FLASH memory.
+ 168:../cmsis_lib/src/misc.c ****   *   This parameter can be one of the following values:
+ 169:../cmsis_lib/src/misc.c ****   *     @arg NVIC_VectTab_RAM: Vector Table in internal SRAM.
+ 170:../cmsis_lib/src/misc.c ****   *     @arg NVIC_VectTab_FLASH: Vector Table in internal FLASH.
+ 171:../cmsis_lib/src/misc.c ****   * @param  Offset: Vector Table base offset field. This value must be a multiple of 0x200.
+ 172:../cmsis_lib/src/misc.c ****   * @retval None
+ 173:../cmsis_lib/src/misc.c ****   */
+ 174:../cmsis_lib/src/misc.c **** void NVIC_SetVectorTable(uint32_t NVIC_VectTab, uint32_t Offset)
+ 175:../cmsis_lib/src/misc.c **** { 
+ 253              		.loc 1 175 0
+ 254              		.cfi_startproc
+ 255              		@ args = 0, pretend = 0, frame = 8
+ 256              		@ frame_needed = 1, uses_anonymous_args = 0
+ 257 0000 80B5     		push	{r7, lr}
+ 258              		.cfi_def_cfa_offset 8
+ 259              		.cfi_offset 7, -8
+ 260              		.cfi_offset 14, -4
+ 261 0002 82B0     		sub	sp, sp, #8
+ 262              		.cfi_def_cfa_offset 16
+ 263 0004 00AF     		add	r7, sp, #0
+ 264              		.cfi_def_cfa_register 7
+ 265 0006 7860     		str	r0, [r7, #4]
+ 266 0008 3960     		str	r1, [r7]
+ 176:../cmsis_lib/src/misc.c ****   /* Check the parameters */
+ 177:../cmsis_lib/src/misc.c ****   assert_param(IS_NVIC_VECTTAB(NVIC_VectTab));
+ 267              		.loc 1 177 0
+ 268 000a 7B68     		ldr	r3, [r7, #4]
+ 269 000c B3F1005F 		cmp	r3, #536870912
+ 270 0010 03D0     		beq	.L12
+ 271              		.loc 1 177 0 is_stmt 0 discriminator 2
+ 272 0012 7B68     		ldr	r3, [r7, #4]
+ 273 0014 B3F1006F 		cmp	r3, #134217728
+ 274 0018 01D1     		bne	.L13
+ 275              	.L12:
+ 276              		.loc 1 177 0 discriminator 1
+ 277 001a 0123     		movs	r3, #1
+ 278 001c 00E0     		b	.L14
+ 279              	.L13:
+ 280              		.loc 1 177 0 discriminator 3
+ 281 001e 0023     		movs	r3, #0
+ 282              	.L14:
+ 283              		.loc 1 177 0 discriminator 4
+ 284 0020 1846     		mov	r0, r3
+ 285 0022 FFF7FEFF 		bl	assert_param
+ 178:../cmsis_lib/src/misc.c ****   assert_param(IS_NVIC_OFFSET(Offset));  
+ 286              		.loc 1 178 0 is_stmt 1 discriminator 4
+ 287 0026 3A68     		ldr	r2, [r7]
+ 288 0028 4FF6FE73 		movw	r3, #65534
+ 289 002c C0F20F03 		movt	r3, 15
+ 290 0030 9A42     		cmp	r2, r3
+ 291 0032 8CBF     		ite	hi
+ 292 0034 0023     		movhi	r3, #0
+ 293 0036 0123     		movls	r3, #1
+ 294 0038 DBB2     		uxtb	r3, r3
+ 295 003a 1846     		mov	r0, r3
+ 296 003c FFF7FEFF 		bl	assert_param
+ 179:../cmsis_lib/src/misc.c ****    
+ 180:../cmsis_lib/src/misc.c ****   SCB->VTOR = NVIC_VectTab | (Offset & (uint32_t)0x1FFFFF80);
+ 297              		.loc 1 180 0 discriminator 4
+ 298 0040 4FF46D43 		mov	r3, #60672
+ 299 0044 CEF20003 		movt	r3, 57344
+ 300 0048 3A68     		ldr	r2, [r7]
+ 301 004a 22F06042 		bic	r2, r2, #-536870912
+ 302 004e 22F07F02 		bic	r2, r2, #127
+ 303 0052 7968     		ldr	r1, [r7, #4]
+ 304 0054 0A43     		orrs	r2, r2, r1
+ 305 0056 9A60     		str	r2, [r3, #8]
+ 181:../cmsis_lib/src/misc.c **** }
+ 306              		.loc 1 181 0 discriminator 4
+ 307 0058 0837     		adds	r7, r7, #8
+ 308 005a BD46     		mov	sp, r7
+ 309              		@ sp needed
+ 310 005c 80BD     		pop	{r7, pc}
+ 311              		.cfi_endproc
+ 312              	.LFE112:
+ 314 005e 00BF     		.section	.text.NVIC_SystemLPConfig,"ax",%progbits
+ 315              		.align	2
+ 316              		.global	NVIC_SystemLPConfig
+ 317              		.thumb
+ 318              		.thumb_func
+ 320              	NVIC_SystemLPConfig:
+ 321              	.LFB113:
+ 182:../cmsis_lib/src/misc.c **** 
+ 183:../cmsis_lib/src/misc.c **** /**
+ 184:../cmsis_lib/src/misc.c ****   * @brief  Selects the condition for the system to enter low power mode.
+ 185:../cmsis_lib/src/misc.c ****   * @param  LowPowerMode: Specifies the new mode for the system to enter low power mode.
+ 186:../cmsis_lib/src/misc.c ****   *   This parameter can be one of the following values:
+ 187:../cmsis_lib/src/misc.c ****   *     @arg NVIC_LP_SEVONPEND: Low Power SEV on Pend.
+ 188:../cmsis_lib/src/misc.c ****   *     @arg NVIC_LP_SLEEPDEEP: Low Power DEEPSLEEP request.
+ 189:../cmsis_lib/src/misc.c ****   *     @arg NVIC_LP_SLEEPONEXIT: Low Power Sleep on Exit.
+ 190:../cmsis_lib/src/misc.c ****   * @param  NewState: new state of LP condition. This parameter can be: ENABLE or DISABLE.
+ 191:../cmsis_lib/src/misc.c ****   * @retval None
+ 192:../cmsis_lib/src/misc.c ****   */
+ 193:../cmsis_lib/src/misc.c **** void NVIC_SystemLPConfig(uint8_t LowPowerMode, FunctionalState NewState)
+ 194:../cmsis_lib/src/misc.c **** {
+ 322              		.loc 1 194 0
+ 323              		.cfi_startproc
+ 324              		@ args = 0, pretend = 0, frame = 8
+ 325              		@ frame_needed = 1, uses_anonymous_args = 0
+ 326 0000 80B5     		push	{r7, lr}
+ 327              		.cfi_def_cfa_offset 8
+ 328              		.cfi_offset 7, -8
+ 329              		.cfi_offset 14, -4
+ 330 0002 82B0     		sub	sp, sp, #8
+ 331              		.cfi_def_cfa_offset 16
+ 332 0004 00AF     		add	r7, sp, #0
+ 333              		.cfi_def_cfa_register 7
+ 334 0006 0246     		mov	r2, r0
+ 335 0008 0B46     		mov	r3, r1
+ 336 000a FA71     		strb	r2, [r7, #7]
+ 337 000c BB71     		strb	r3, [r7, #6]
+ 195:../cmsis_lib/src/misc.c ****   /* Check the parameters */
+ 196:../cmsis_lib/src/misc.c ****   assert_param(IS_NVIC_LP(LowPowerMode));
+ 338              		.loc 1 196 0
+ 339 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 340 0010 102B     		cmp	r3, #16
+ 341 0012 05D0     		beq	.L16
+ 342              		.loc 1 196 0 is_stmt 0 discriminator 2
+ 343 0014 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 344 0016 042B     		cmp	r3, #4
+ 345 0018 02D0     		beq	.L16
+ 346              		.loc 1 196 0 discriminator 1
+ 347 001a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 348 001c 022B     		cmp	r3, #2
+ 349 001e 01D1     		bne	.L17
+ 350              	.L16:
+ 351 0020 0123     		movs	r3, #1
+ 352 0022 00E0     		b	.L18
+ 353              	.L17:
+ 354              		.loc 1 196 0 discriminator 3
+ 355 0024 0023     		movs	r3, #0
+ 356              	.L18:
+ 357              		.loc 1 196 0 discriminator 4
+ 358 0026 1846     		mov	r0, r3
+ 359 0028 FFF7FEFF 		bl	assert_param
+ 197:../cmsis_lib/src/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));  
+ 360              		.loc 1 197 0 is_stmt 1 discriminator 4
+ 361 002c BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 362 002e 002B     		cmp	r3, #0
+ 363 0030 02D0     		beq	.L19
+ 364              		.loc 1 197 0 is_stmt 0 discriminator 2
+ 365 0032 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 366 0034 012B     		cmp	r3, #1
+ 367 0036 01D1     		bne	.L20
+ 368              	.L19:
+ 369              		.loc 1 197 0 discriminator 1
+ 370 0038 0123     		movs	r3, #1
+ 371 003a 00E0     		b	.L21
+ 372              	.L20:
+ 373              		.loc 1 197 0 discriminator 3
+ 374 003c 0023     		movs	r3, #0
+ 375              	.L21:
+ 376              		.loc 1 197 0 discriminator 4
+ 377 003e 1846     		mov	r0, r3
+ 378 0040 FFF7FEFF 		bl	assert_param
+ 198:../cmsis_lib/src/misc.c ****   
+ 199:../cmsis_lib/src/misc.c ****   if (NewState != DISABLE)
+ 379              		.loc 1 199 0 is_stmt 1 discriminator 4
+ 380 0044 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 381 0046 002B     		cmp	r3, #0
+ 382 0048 0CD0     		beq	.L22
+ 200:../cmsis_lib/src/misc.c ****   {
+ 201:../cmsis_lib/src/misc.c ****     SCB->SCR |= LowPowerMode;
+ 383              		.loc 1 201 0
+ 384 004a 4FF46D43 		mov	r3, #60672
+ 385 004e CEF20003 		movt	r3, 57344
+ 386 0052 4FF46D42 		mov	r2, #60672
+ 387 0056 CEF20002 		movt	r2, 57344
+ 388 005a 1169     		ldr	r1, [r2, #16]
+ 389 005c FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 390 005e 0A43     		orrs	r2, r2, r1
+ 391 0060 1A61     		str	r2, [r3, #16]
+ 392 0062 0CE0     		b	.L15
+ 393              	.L22:
+ 202:../cmsis_lib/src/misc.c ****   }
+ 203:../cmsis_lib/src/misc.c ****   else
+ 204:../cmsis_lib/src/misc.c ****   {
+ 205:../cmsis_lib/src/misc.c ****     SCB->SCR &= (uint32_t)(~(uint32_t)LowPowerMode);
+ 394              		.loc 1 205 0
+ 395 0064 4FF46D43 		mov	r3, #60672
+ 396 0068 CEF20003 		movt	r3, 57344
+ 397 006c 4FF46D42 		mov	r2, #60672
+ 398 0070 CEF20002 		movt	r2, 57344
+ 399 0074 1169     		ldr	r1, [r2, #16]
+ 400 0076 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 401 0078 D243     		mvns	r2, r2
+ 402 007a 0A40     		ands	r2, r2, r1
+ 403 007c 1A61     		str	r2, [r3, #16]
+ 404              	.L15:
+ 206:../cmsis_lib/src/misc.c ****   }
+ 207:../cmsis_lib/src/misc.c **** }
+ 405              		.loc 1 207 0
+ 406 007e 0837     		adds	r7, r7, #8
+ 407 0080 BD46     		mov	sp, r7
+ 408              		@ sp needed
+ 409 0082 80BD     		pop	{r7, pc}
+ 410              		.cfi_endproc
+ 411              	.LFE113:
+ 413              		.section	.text.SysTick_CLKSourceConfig,"ax",%progbits
+ 414              		.align	2
+ 415              		.global	SysTick_CLKSourceConfig
+ 416              		.thumb
+ 417              		.thumb_func
+ 419              	SysTick_CLKSourceConfig:
+ 420              	.LFB114:
+ 208:../cmsis_lib/src/misc.c **** 
+ 209:../cmsis_lib/src/misc.c **** /**
+ 210:../cmsis_lib/src/misc.c ****   * @brief  Configures the SysTick clock source.
+ 211:../cmsis_lib/src/misc.c ****   * @param  SysTick_CLKSource: specifies the SysTick clock source.
+ 212:../cmsis_lib/src/misc.c ****   *   This parameter can be one of the following values:
+ 213:../cmsis_lib/src/misc.c ****   *     @arg SysTick_CLKSource_HCLK_Div8: AHB clock divided by 8 selected as SysTick clock source.
+ 214:../cmsis_lib/src/misc.c ****   *     @arg SysTick_CLKSource_HCLK: AHB clock selected as SysTick clock source.
+ 215:../cmsis_lib/src/misc.c ****   * @retval None
+ 216:../cmsis_lib/src/misc.c ****   */
+ 217:../cmsis_lib/src/misc.c **** void SysTick_CLKSourceConfig(uint32_t SysTick_CLKSource)
+ 218:../cmsis_lib/src/misc.c **** {
+ 421              		.loc 1 218 0
+ 422              		.cfi_startproc
+ 423              		@ args = 0, pretend = 0, frame = 8
+ 424              		@ frame_needed = 1, uses_anonymous_args = 0
+ 425 0000 80B5     		push	{r7, lr}
+ 426              		.cfi_def_cfa_offset 8
+ 427              		.cfi_offset 7, -8
+ 428              		.cfi_offset 14, -4
+ 429 0002 82B0     		sub	sp, sp, #8
+ 430              		.cfi_def_cfa_offset 16
+ 431 0004 00AF     		add	r7, sp, #0
+ 432              		.cfi_def_cfa_register 7
+ 433 0006 7860     		str	r0, [r7, #4]
+ 219:../cmsis_lib/src/misc.c ****   /* Check the parameters */
+ 220:../cmsis_lib/src/misc.c ****   assert_param(IS_SYSTICK_CLK_SOURCE(SysTick_CLKSource));
+ 434              		.loc 1 220 0
+ 435 0008 7B68     		ldr	r3, [r7, #4]
+ 436 000a 042B     		cmp	r3, #4
+ 437 000c 03D0     		beq	.L25
+ 438              		.loc 1 220 0 is_stmt 0 discriminator 2
+ 439 000e 7B68     		ldr	r3, [r7, #4]
+ 440 0010 13F1050F 		cmn	r3, #5
+ 441 0014 01D1     		bne	.L26
+ 442              	.L25:
+ 443              		.loc 1 220 0 discriminator 1
+ 444 0016 0123     		movs	r3, #1
+ 445 0018 00E0     		b	.L27
+ 446              	.L26:
+ 447              		.loc 1 220 0 discriminator 3
+ 448 001a 0023     		movs	r3, #0
+ 449              	.L27:
+ 450              		.loc 1 220 0 discriminator 4
+ 451 001c 1846     		mov	r0, r3
+ 452 001e FFF7FEFF 		bl	assert_param
+ 221:../cmsis_lib/src/misc.c ****   if (SysTick_CLKSource == SysTick_CLKSource_HCLK)
+ 453              		.loc 1 221 0 is_stmt 1 discriminator 4
+ 454 0022 7B68     		ldr	r3, [r7, #4]
+ 455 0024 042B     		cmp	r3, #4
+ 456 0026 0CD1     		bne	.L28
+ 222:../cmsis_lib/src/misc.c ****   {
+ 223:../cmsis_lib/src/misc.c ****     SysTick->CTRL |= SysTick_CLKSource_HCLK;
+ 457              		.loc 1 223 0
+ 458 0028 4EF21003 		movw	r3, #57360
+ 459 002c CEF20003 		movt	r3, 57344
+ 460 0030 4EF21002 		movw	r2, #57360
+ 461 0034 CEF20002 		movt	r2, 57344
+ 462 0038 1268     		ldr	r2, [r2]
+ 463 003a 42F00402 		orr	r2, r2, #4
+ 464 003e 1A60     		str	r2, [r3]
+ 465 0040 0BE0     		b	.L24
+ 466              	.L28:
+ 224:../cmsis_lib/src/misc.c ****   }
+ 225:../cmsis_lib/src/misc.c ****   else
+ 226:../cmsis_lib/src/misc.c ****   {
+ 227:../cmsis_lib/src/misc.c ****     SysTick->CTRL &= SysTick_CLKSource_HCLK_Div8;
+ 467              		.loc 1 227 0
+ 468 0042 4EF21003 		movw	r3, #57360
+ 469 0046 CEF20003 		movt	r3, 57344
+ 470 004a 4EF21002 		movw	r2, #57360
+ 471 004e CEF20002 		movt	r2, 57344
+ 472 0052 1268     		ldr	r2, [r2]
+ 473 0054 22F00402 		bic	r2, r2, #4
+ 474 0058 1A60     		str	r2, [r3]
+ 475              	.L24:
+ 228:../cmsis_lib/src/misc.c ****   }
+ 229:../cmsis_lib/src/misc.c **** }
+ 476              		.loc 1 229 0
+ 477 005a 0837     		adds	r7, r7, #8
+ 478 005c BD46     		mov	sp, r7
+ 479              		@ sp needed
+ 480 005e 80BD     		pop	{r7, pc}
+ 481              		.cfi_endproc
+ 482              	.LFE114:
+ 484              		.text
+ 485              	.Letext0:
+ 486              		.file 2 "/opt/arm-2014.05/arm-none-eabi/include/stdint.h"
+ 487              		.file 3 "/media/asutp/promauto/promauto/src/stm32/workspace/02F4_Template/cmsis/core_cm4.h"
+ 488              		.file 4 "/media/asutp/promauto/promauto/src/stm32/workspace/02F4_Template/cmsis_boot/stm32f4xx.h"
+ 489              		.file 5 "/media/asutp/promauto/promauto/src/stm32/workspace/02F4_Template/cmsis_lib/inc/misc.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 misc.c
+     /tmp/ccFO0WBW.s:20     .text.NVIC_PriorityGroupConfig:00000000 $t
+     /tmp/ccFO0WBW.s:25     .text.NVIC_PriorityGroupConfig:00000000 NVIC_PriorityGroupConfig
+     /tmp/ccFO0WBW.s:85     .text.NVIC_Init:00000000 $t
+     /tmp/ccFO0WBW.s:90     .text.NVIC_Init:00000000 NVIC_Init
+     /tmp/ccFO0WBW.s:246    .text.NVIC_SetVectorTable:00000000 $t
+     /tmp/ccFO0WBW.s:251    .text.NVIC_SetVectorTable:00000000 NVIC_SetVectorTable
+     /tmp/ccFO0WBW.s:315    .text.NVIC_SystemLPConfig:00000000 $t
+     /tmp/ccFO0WBW.s:320    .text.NVIC_SystemLPConfig:00000000 NVIC_SystemLPConfig
+     /tmp/ccFO0WBW.s:414    .text.SysTick_CLKSourceConfig:00000000 $t
+     /tmp/ccFO0WBW.s:419    .text.SysTick_CLKSourceConfig:00000000 SysTick_CLKSourceConfig
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.1.a98143eb06d636ed6a08228c168dc974
+                           .group:00000000 wm4.stm32f4xx.h.48.0b3cda0630bac1bf9be1255cab0e1f3b
+                           .group:00000000 wm4.core_cm4.h.32.5f62939b60122629d60d85d0c4a14709
+                           .group:00000000 wm4.newlib.h.8.384a112feabb3bef7b573ae48cde2e3b
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4.config.h.183.aa62afef667fb61d15fa64c48beb2f14
+                           .group:00000000 wm4._ansi.h.23.2147fde150631f5584b9dc29b914d1b8
+                           .group:00000000 wm4.stdint.h.20.54ad762faa59e3c05491630641c8d8bf
+                           .group:00000000 wm4.core_cmInstr.h.25.f50f886f2edf670cf199b35fd96f5c91
+                           .group:00000000 wm4.core_cm4_simd.h.29.b4a3fdfb606cb3b26119424324d4b963
+                           .group:00000000 wm4.core_cm4.h.153.5393ef7e6cebf34dd51ca528f9218ab3
+                           .group:00000000 wm4.stm32f4xx.h.283.19a4f5b18434688c6c3486bb9c91d8d5
+                           .group:00000000 wm4.misc.h.80.738aeeb1a04362df829892c9dd922afe
+
+UNDEFINED SYMBOLS
+assert_param

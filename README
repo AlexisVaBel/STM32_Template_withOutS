@@ -1,0 +1,4 @@
+STM32F4 template project for ECLIPSE
+USED 	arm-none-eabi-gcc
+	dir style and confs are from COIDE configs
+	debugging tool openocd
